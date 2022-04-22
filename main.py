@@ -18,8 +18,24 @@ def save_to_disk(items, fields, filename):
         now = datetime.datetime.now()
         f.write(f"# Date accessed: {str(now)}\n")
 
+        # Some known metadata
+        metadata = {
+            'data-volume': '[MB] Megabytes',
+            'ussd-code-widget': '[,str50] USSD Code to dial',
+            'data-price': '[TOMAN] Add the 9% tax to this value',
+            'data-duration': '[DAYS] Check if the plan is limited to certain range of hours',
+        }
+
+        # Write all header information at the beginning of the file, make
+        # sure 'ussd-code-widget' is the last column with a fixed-length
+        lastcolumn = 'ussd-code-widget'
+        ussd=fields.index(lastcolumn)
+        ussd=fields.pop(ussd)
+        lastcolumn_length = 50
         for i, field in enumerate(fields):
-            f.write(f"# Column {i+1}: {field}\n")
+            f.write(f"# Column {i+1}: {field} {metadata.get(field)}\n")
+            # Done, now write the last column. 'i' is still in scope!
+        f.write(f"# Column {i+2}: {lastcolumn} {metadata.get(lastcolumn)}\n")
 
         # Insert all data
         rows = []
@@ -27,6 +43,9 @@ def save_to_disk(items, fields, filename):
             row = ""
             for field in fields:
                 row += f"{item.get(field)} "
+            # Write the last column, and give it a fixed length because
+            # want a predictable format of string.
+            row += f"{item.get(lastcolumn):{lastcolumn_length}}"
 
             # Row is ready
             f.write(f"{row}\n")
@@ -69,6 +88,12 @@ def get_items_in_page(driver, attributes, filter_by: dict={}):
             info.update({
                 att: item.get_attribute(att)
             })
+
+        # Add the ussd-code-widget as well
+        info.update({
+            'ussd-code-widget':
+            item.find_element(by='class name', value='ussd-code-widget').get_attribute('innerHTML').strip()
+        })
 
         # Inserted all attributes, now append to all items
         items.append(info)
@@ -142,4 +167,11 @@ if __name__ == "__main__":
         items.extend( get_items_in_page(driver, attributes, filter_by=filter_list) )
 
     items = duration_to_num(items)
-    save_to_disk(items, attributes, output_name)
+
+    # All columns to save
+    columns = ['ussd-code-widget']
+    columns.extend(attributes)
+    save_to_disk(items, columns, output_name)
+
+    # Finished! Clean up
+    driver.close()
