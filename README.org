@@ -1,0 +1,23 @@
+* Check MCI internet package plans
+
+Use 'selenium' to check the MCI website and collect all plans
+available. This will help with choosing the best plan if you're into doing
+some simple calculation before buying!
+
+
+** Install =selenium=
+#+BEGIN_EXAMPLE bash
+pip3 install selenium
+#+END_EXAMPLE
+
+** Install the =geckodriver=
+Look for the driver in your package manager. In =Archlinux=:
+#+BEGIN_EXAMPLE bash
+sudo pacman -Sy geckodriver
+#+END_EXAMPLE
+
+** Run the program
+#+BEGIN_EXAMPLE python
+python3 main.py       # run the main program
+cat notrino-plans.dat # see the results
+#+END_EXAMPLE
