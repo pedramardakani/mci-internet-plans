@@ -21,3 +21,44 @@ sudo pacman -Sy geckodriver
 python3 main.py       # run the main program
 cat notrino-plans.dat # see the results
 #+END_EXAMPLE
+
+** Example calculation using Gnuastro (just for fun!)
+Using the [[https://www.gnu.org/software/gnuastro/manual/html_node/Table.html][asttable]] program from [[https://www.gnu.org/software/gnuastro/][gnuastro]].
+#+BEGIN_EXAMPLE
+$ asttable notrino-plans.dat -c4,1,2,3 -c'arith $1 $2 / 1000 x' \
+  --colinfoinstdout -m5,toman-per-gb,TOMAN/GB,'Add the 9% tax to this value'
+#+END_EXAMPLE
+
+The output:
+#+BEGIN_EXAMPLE bash
+# Column 1: ussd-code-widget [        ,str50,] USSD Code to dial
+# Column 2: data-price       [TOMAN   ,f64  ,] Add the 9% tax to this value
+# Column 3: data-volume      [MB      ,f64  ,] Megabytes
+# Column 4: data-duration    [DAYS    ,f64  ,] Check if the plan is limited to certain range of hours
+# Column 5: toman-per-gb     [TOMAN/GB,f64  ,] Add the 9% tax to this value
+*100*3154#    1600    60       1     26666.666666667
+*100*3153#    2700    150      1     18000
+*100*314#     3600    250      1     14400
+*100*313#     4900    500      1     9800
+*100*312#     5900    750      1     7866.6666666667
+*100*311#     6400    1024     1     6250
+*100*3151#    9900    3072     1     3222.65625
+*100*3255#    4400    200      7     22000
+*100*3254#    5500    300      7     18333.333333333
+*100*324#     7000    500      7     14000
+*100*323#     8300    750      7     11066.666666667
+*100*322#     10900   1536     7     7096.3541666667
+*100*321#     13000   2548     7     5102.0408163265
+*100*3252#    16000   4096     7     3906.25
+*100*3251#    19500   6144     7     3173.828125
+*100*264#     10400   1024     30    10156.25
+*100*263#     13900   2048     30    6787.109375
+*100*24#      19000   3072     30    6184.8958333333
+*100*23#      21300   4096     30    5200.1953125
+*100*22#      23600   5120     30    4609.375
+*100*21#      28200   7168     30    3934.1517857143
+*100*33232#   19900   0        30    inf
+*100*33124#   10000   12288    30    813.80208333333
+*100*412#     46000   12288    60    3743.4895833333
+*100*432#     62000   15360    120   4036.4583333333
+#+END_EXAMPLE
